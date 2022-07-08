@@ -147,3 +147,32 @@ listenerCOunt(이벤트명)  : 리스너가 몇개 연결되어있는지 확인
 예외처리
 멀티스래드에서는 스레드 하나가 멈추면 그 일을 다른 스레드가 대신하는데 노드는 스레드가 하나여서
 스렏으가 멈추면 전체가 멈추게 된다 그래서 노드에서는 예외처리가 더욱 중요하다 
+
+예기치 못한 에러는 uncaughtException이벤트로 처리할 수 있지만 해당 이벤트는 최후의 방법이고
+이후의 동작을 보증하지 않기 떄문에 로그 기록용으로만 사용하는게 좋다 
+
+자주 발생하는 에러 
+
+node : command not found - 환경변수가 제대로 설정되어있지 않을떄 뜨는 오류
+ReferenceError : 모듈 is not defined - 모듈을 require하지 않으면 뜨는 오류
+Error : Cannot find module 모듈명 - 모듈을 rquire했지만 설치하지 않은 경우 
+Error : Can't set headers after they are sent : 요청에 대한 응답을 보낼 떄 응답을 두번 이상 보낸경우 뜨는 에러
+FATAL ERROR : CALL_AND_RETRY_LAST Alloation faild Javascript heap out of memory - 코드를 실행할 떄 메모리가 부족하면 뜨는 오류
+UnhandlePromiseRejectionWarning : Unhandled promise rejection - 프로미스 사용 시 catch메서드를 붙이지 않은 경우 생기는 오류 
+EADDRINUSE 포트 번호 : 해당 포트 번호에 이미 다른 프로세스가 연결되어있는경우 발생
+EACCES 또는 EPERM - 노드가 작업을 수행하는 데 권한이 충분하지 않은 경우 발생
+EJSONPARSE - package.json 등의 JSON파일에 문법 오류가 있을 때 발생
+ECONNREFUSED - 요청을 보냈으나 연결이 성립되지 않은 경우 발생
+ETARGERT - packge.json에 기록한 패키지 버전이 존재하지 않을 떄 발생
+ETIMEOUT - 요청을 보냈는데 응답이 일정 시간 내에 오지 않은 경우 발생
+ENOENT : no such file or directory - 지정한 폴더나 파일이 존재하지 않는 경우 
+
+
+aws에서 노드 실행하기
+
+sudo apt-get update 
+sudo apt-get install nodejs
+sudo apt-get install npm
+sudo apt-get install git
+
+이것들 먼저 설치해준다 
