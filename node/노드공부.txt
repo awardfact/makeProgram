@@ -167,7 +167,6 @@ ETARGERT - packge.json에 기록한 패키지 버전이 존재하지 않을 떄 
 ETIMEOUT - 요청을 보냈는데 응답이 일정 시간 내에 오지 않은 경우 발생
 ENOENT : no such file or directory - 지정한 폴더나 파일이 존재하지 않는 경우 
 
-
 aws에서 노드 실행하기
 
 sudo apt-get update 
@@ -176,3 +175,16 @@ sudo apt-get install npm
 sudo apt-get install git
 
 이것들 먼저 설치해준다 
+ npm start- 서버 실행
+$ sudo nohup npm start & - 백그라운드로 서버 실행 
+
+서버 실행을 위한 기본코드 
+const http = require('http');
+http.createServer((req,res)=>{
+    res.writeHead(200, {'Content-type' : 'text/html; charset=utf-8' });
+    res.write('<div>hello world</div>');
+    res.end('<div>hello Server</div>');
+}).listen(8080 , ()=>{
+    console.log('8080포트');
+});
+이 코드를 포트만 바꿔 여러개 넣어서 여러 서버를 동시에 실행할 수도 있다 
