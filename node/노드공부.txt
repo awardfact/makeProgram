@@ -465,3 +465,65 @@ p hello world
 res.locals.error에 넣어준 값을 함께 렌더링한다 
 res.locals.error = process.env.NODE_ENV !== 'production' ? err :{};을 에러처리 미들웨어에 넣으면 배포환경이
 아닌경우에만 스택 트레이스를 출력한다 
+
+
+시퀄라이즈를 사용하면 노드에서 mysql작업을 쉽게 할 수 있다 
+설치는 npm i sequelize sequelize-cli mysql2 를 쳐서 한다 
+sequelize-cli는 시퀄라이즈 명령을 실행하기 위한 패키지이고 mysql2는 시퀄라이즈와 mysql을 이어주는 드라이브다
+설치 후npx sequlize init 명령어를 호출하면 된다 
+
+models/index.js는 그대로 쓰면 오류가 생길수 있어서 상황에 맞게 소스를 수정해준다 
+mysql과 연동할 때는 config 폴더 안의 config.json정보가 사용되기 떄문에 해당 파일을 사용할 데이터베이스에
+맞게 넣어주면 된다 
+
+디비 연결이 안되면 npx sequelize db:create를 해준다 
+mysql에서 정의한 테이블을 시퀄라이즈에서도 정의해야 하는데 mysql테이블은 시퀄라이즈
+모델과 대응된다 시퀄라이즈는 모델과 mysql테이블을 연결해주는 역할을 한다4
+models/폴더에 테이블이름.js 파일을 만들고 모델을 만들어준다 
+
+모델은 sequelize.model을 확장한 클래스로 선언하고 
+static init메서드와 static associate메서드로 나뉜다 
+init메서드는 테이블에 대한 설정을 하고 associate는 다른 모델과의 관계를 적는다
+init메서드의 super.init의 첫 번째 인수가 테이블 칼럼에 대한 설명이고 두 번쨰 인수가 테이블 자체에 대한 설명이다
+
+자료형은 VARCHAR - STRING , INT - INTERGER , TINYINT - BOOLEAAN , DATETIME - DATE로 적는다
+allowNull - NOT NULL , unique - UNIQUE 로 연결하고 defaultValue는 기본값을 의미한다
+Sequelize.NOW로 현재 시간을 기본값으로 사용할 수 있다 
+super.init 매서드의 두 번쨰 인수는 테이블 옵션이다
+sequelize - static init 매서드의 매개변수와 연결되는 옵션으로 db.sequelize객체를 넣는다 나중에 index.js에서 연결
+timestamps - true로 되어있으면 시퀄라이즈는 createdAt과 updatedAt컬럼을 추가하고 생성, 수정 시간이 자동으로 입력된다
+underscored - 시퀄라이즈는 테이블명과 컬럼명을 캐멀 형식(createdAt)으로 만드는데 스네이크 형식(created_at)으로 바꾸는 옵션이다
+modelName - 모델 이름을 설정한다 이름은 노드에서 사용
+tableName - 실제 데이터베이스의 테이블 이름을 넣는다 보통 
+paranoid - ture로 설정하면 deletedAt컬럼이 생기고 로우를 삭제할떄 완전히 삭제되지 않고 deletedAt에 지운 시각이 기록된다
+charset, collate - 각각 utf8 , utf8_general_ci로 설정해야 한글이 입력된다 이포티콘까지 쓰려면 utf8mb4 , utf8mb4_general_ci를 입력한다 
+ex)
+const Sequelize = require('sequelize');
+module.exports = class Comment extends Sequelize.Model {
+  static init(sequelize) {
+    return super.init({
+      comment: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.NOW,
+      },
+    }, {
+      sequelize,
+      timestamps: false,
+      modelName: 'Comment',
+      tableName: 'comments',
+      paranoid: false,
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_general_ci',
+    });
+  }
+  static associate(db) {
+    db.Comment.belongsTo(db.User, { foreignKey: 'commenter', targetKey: 'id' });
+  }
+};
+
+ 
